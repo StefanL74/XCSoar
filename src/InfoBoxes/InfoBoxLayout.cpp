@@ -31,9 +31,9 @@ Copyright_License {
  * The number of info boxes in each geometry.
  */
 static const unsigned char geometry_counts[] = {
-  8, 8, 8, 8, 8, 8,
+  8, 8, 8, 12, 8, 8,
   9, 5, 12, 24, 12,
-  12, 9, 8, 4, 4, 4, 4,
+  12, 9, 8, 4, 4, 6, 6,
 };
 
 namespace InfoBoxLayout
@@ -148,8 +148,8 @@ InfoBoxLayout::Calculate(PixelRect rc, InfoBoxSettings::Geometry geometry)
     break;
 
   case InfoBoxSettings::Geometry::LEFT_4_RIGHT_4:
-    rc.left = MakeLeftColumn(layout, layout.positions, 4, rc.left, rc.top);
-    rc.right = MakeRightColumn(layout, layout.positions + 4, 4,
+    rc.left = MakeLeftColumn(layout, layout.positions, 6, rc.left, rc.top);
+    rc.right = MakeRightColumn(layout, layout.positions + 6, 6,
                                rc.right, rc.top);
     break;
 
@@ -222,10 +222,10 @@ InfoBoxLayout::Calculate(PixelRect rc, InfoBoxSettings::Geometry geometry)
     rc.bottom = MakeBottomRow(layout, layout.positions, 4, rc.left, rc.bottom);
     break;
   case InfoBoxSettings::Geometry::LEFT_4:
-    rc.left = MakeLeftColumn(layout, layout.positions, 4, rc.left, rc.top);
+    rc.left = MakeLeftColumn(layout, layout.positions, 6, rc.left, rc.top);
     break;
   case InfoBoxSettings::Geometry::RIGHT_4:
-    rc.right = MakeRightColumn(layout, layout.positions, 4, rc.right, rc.top);
+    rc.right = MakeRightColumn(layout, layout.positions, 6, rc.right, rc.top);
     break;
   };
 
