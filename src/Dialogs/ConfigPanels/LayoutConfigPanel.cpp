@@ -43,7 +43,8 @@ enum ControlIndex {
   DialogStyle,
   AppInverseInfoBox,
   AppInfoBoxColors,
-  AppInfoBoxBorder
+  AppInfoBoxBorder,
+  AppInfoBoxSize
 };
 
 static const StaticEnumChoice display_orientation_list[] = {
@@ -97,6 +98,14 @@ static const StaticEnumChoice info_box_geometry_list[] = {
     N_("4 Left (Landscape)") },
   { (unsigned)InfoBoxSettings::Geometry::RIGHT_4,
     N_("4 Right (Landscape)") },
+  { (unsigned)InfoBoxSettings::Geometry::LEFT_7,
+    N_("7 Left (Landscape)") },
+  { (unsigned)InfoBoxSettings::Geometry::BOTTOM_7,
+    N_("7 Bottom (Portrait)") },
+  { (unsigned)InfoBoxSettings::Geometry::LEFT_7_RIGHT_7,
+    N_("14 Left + Right (Landscape)") },
+  { (unsigned)InfoBoxSettings::Geometry::TOP_7_BOTTOM_7,
+    N_("14 Top + Bottom (Portrait)") },
   { 0 }
 };
 
@@ -144,6 +153,22 @@ static const StaticEnumChoice infobox_border_list[] = {
   { 0, N_("Box"), N_("Draws boxes around each InfoBox.") },
   { 1, N_("Tab"), N_("Draws a tab at the top of the InfoBox across the title.") },
   { 0 }
+};
+
+static const StaticEnumChoice infobox_size_list[] = {
+  { 70, N_("-30%"), N_("Default size -30%") },
+  { 75, N_("-25%"), N_("Default size -25%") },
+  { 80, N_("-20%"), N_("Default size -20%") },
+  { 85, N_("-15%"), N_("Default size -15%") },
+  { 90, N_("-10%"), N_("Default size -10%") },
+  { 95, N_("-5%"), N_("Default size -5%") },
+  { 100, N_("Default"), N_("Default size") },
+  { 105, N_("+5%"), N_("Default size +5%") },
+  { 110, N_("+10%"), N_("Default size +10%") },
+  { 115, N_("+15%"), N_("Default size +15%") },
+  { 120, N_("+20%"), N_("Default size +20%") },
+  { 125, N_("+25%"), N_("Default size +25%") },
+  { 0 } 
 };
 
 class LayoutConfigPanel : public RowFormWidget {
@@ -201,6 +226,9 @@ LayoutConfigPanel::Prepare(ContainerWindow &parent, const PixelRect &rc)
 
   AddEnum(_("InfoBox border"), NULL, infobox_border_list, ui_settings.info_boxes.border_style);
   SetExpertRow(AppInfoBoxBorder);
+  
+  AddEnum(_("InfoBox size"), NULL, infobox_size_list, ui_settings.info_boxes.size);
+  SetExpertRow(AppInfoBoxSize);  
 }
 
 bool
@@ -239,6 +267,9 @@ LayoutConfigPanel::Save(bool &_changed, bool &_require_restart)
 
   changed |= require_restart |=
     SaveValueEnum(AppInfoBoxBorder, ProfileKeys::AppInfoBoxBorder, ui_settings.info_boxes.border_style);
+
+  info_box_geometry_changed |=
+    SaveValue(AppInfoBoxSize, ProfileKeys::AppInfoBoxSize, ui_settings.info_boxes.size);
 
   changed |= require_restart |=
     SaveValue(AppInverseInfoBox, ProfileKeys::AppInverseInfoBox, ui_settings.info_boxes.inverse);

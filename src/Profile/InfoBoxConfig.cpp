@@ -60,6 +60,7 @@ Profile::Load(InfoBoxSettings &settings)
   Get(ProfileKeys::AppInfoBoxColors, settings.use_colors);
 
   GetEnum(ProfileKeys::AppInfoBoxBorder, settings.border_style);
+  Get(ProfileKeys::AppInfoBoxSize, settings.size);
 
   GetV60InfoBoxManagerConfig(settings);
   TCHAR profileKey[32];

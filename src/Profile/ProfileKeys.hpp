@@ -117,6 +117,7 @@ extern const TCHAR HapticFeedback[];
 extern const TCHAR AppDialogTabStyle[];
 extern const TCHAR AppDialogStyle[];
 extern const TCHAR AppInfoBoxBorder[];
+extern const TCHAR AppInfoBoxSize[];
 extern const TCHAR AppInfoBoxModel[]; // VENTA-ADDON MODEL CHANGE
 extern const TCHAR AppAveNeedle[];
 extern const TCHAR AutoAdvance[];

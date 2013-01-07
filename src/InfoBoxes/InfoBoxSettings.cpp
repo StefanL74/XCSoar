@@ -57,6 +57,8 @@ InfoBoxSettings::SetDefaults()
   use_colors = true;
   border_style = apIbBox;
 
+  size = 100; // Default size on InfoBoxes
+
   for (unsigned i = 0; i < MAX_PANELS; ++i)
     panels[i].Clear();
 

@@ -121,6 +121,7 @@ const TCHAR AppDialogStyle[] = _T("AppDialogStyle");
 const TCHAR AppInfoBoxColors[] = _T("AppInfoBoxColors");
 const TCHAR TeamcodeRefWaypoint[] = _T("TeamcodeRefWaypoint");
 const TCHAR AppInfoBoxBorder[] = _T("AppInfoBoxBorder");
+const TCHAR AppInfoBoxSize[] = _T("AppInfoBoxSize");
 
 const TCHAR AppInfoBoxModel[] = _T("AppInfoBoxModel"); // VENTA-ADDON MODEL CONFIG
 

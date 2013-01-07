@@ -25,15 +25,18 @@ Copyright_License {
 #include "Border.hpp"
 #include "Util/Macros.hpp"
 
+#include "Interface.hpp"
+
 #include <stdio.h>
 
 /**
  * The number of info boxes in each geometry.
  */
 static const unsigned char geometry_counts[] = {
-  8, 8, 8, 12, 8, 8,
-  9, 5, 12, 24, 12,
-  12, 9, 8, 4, 4, 6, 6,
+  8, 8, 8, 8, 8, 8,
+  9, 5, 12, 24, 16,
+  12, 9, 8, 4, 4, 4, 4,
+  7, 7, 14, 14,
 };
 
 namespace InfoBoxLayout
@@ -148,8 +151,8 @@ InfoBoxLayout::Calculate(PixelRect rc, InfoBoxSettings::Geometry geometry)
     break;
 
   case InfoBoxSettings::Geometry::LEFT_4_RIGHT_4:
-    rc.left = MakeLeftColumn(layout, layout.positions, 6, rc.left, rc.top);
-    rc.right = MakeRightColumn(layout, layout.positions + 6, 6,
+    rc.left = MakeLeftColumn(layout, layout.positions, 4, rc.left, rc.top);
+    rc.right = MakeRightColumn(layout, layout.positions + 4, 4,
                                rc.right, rc.top);
     break;
 
@@ -222,11 +225,34 @@ InfoBoxLayout::Calculate(PixelRect rc, InfoBoxSettings::Geometry geometry)
     rc.bottom = MakeBottomRow(layout, layout.positions, 4, rc.left, rc.bottom);
     break;
   case InfoBoxSettings::Geometry::LEFT_4:
-    rc.left = MakeLeftColumn(layout, layout.positions, 6, rc.left, rc.top);
+    rc.left = MakeLeftColumn(layout, layout.positions, 4, rc.left, rc.top);
     break;
   case InfoBoxSettings::Geometry::RIGHT_4:
-    rc.right = MakeRightColumn(layout, layout.positions, 6, rc.right, rc.top);
+    rc.right = MakeRightColumn(layout, layout.positions, 4, rc.right, rc.top);
     break;
+
+
+  case InfoBoxSettings::Geometry::LEFT_7:
+    rc.left = MakeLeftColumn(layout, layout.positions, 7, rc.left, rc.top);
+    break;
+
+  case InfoBoxSettings::Geometry::BOTTOM_7:
+    rc.bottom = MakeBottomRow(layout, layout.positions, 7, rc.left, rc.bottom);
+    break;
+
+  case InfoBoxSettings::Geometry::LEFT_7_RIGHT_7:
+    rc.left = MakeLeftColumn(layout, layout.positions, 7, rc.left, rc.top);
+    rc.right = MakeRightColumn(layout, layout.positions + 7, 7,
+                               rc.right, rc.top);
+    break;
+
+  case InfoBoxSettings::Geometry::TOP_7_BOTTOM_7:
+    rc.top = MakeTopRow(layout, layout.positions, 7, rc.left, rc.top);
+    rc.bottom = MakeBottomRow(layout, layout.positions + 7, 7,
+                              rc.left, rc.bottom);
+    break;
+
+
   };
 
   layout.remaining = rc;
@@ -240,6 +266,8 @@ InfoBoxLayout::ValidateGeometry(InfoBoxSettings::Geometry geometry,
   if ((unsigned)geometry >= ARRAY_SIZE(geometry_counts))
     /* out of range */
     geometry = InfoBoxSettings::Geometry::TOP_4_BOTTOM_4;
+
+  return geometry;
 
   if (width > height) {
     /* landscape */
@@ -264,6 +292,8 @@ InfoBoxLayout::ValidateGeometry(InfoBoxSettings::Geometry geometry,
     case InfoBoxSettings::Geometry::LEFT_6_RIGHT_3_VARIO:
     case InfoBoxSettings::Geometry::LEFT_4:
     case InfoBoxSettings::Geometry::RIGHT_4:
+    case InfoBoxSettings::Geometry::LEFT_7:
+    case InfoBoxSettings::Geometry::LEFT_7_RIGHT_7:
       break;
 
     case InfoBoxSettings::Geometry::RIGHT_5:
@@ -278,6 +308,13 @@ InfoBoxLayout::ValidateGeometry(InfoBoxSettings::Geometry geometry,
     case InfoBoxSettings::Geometry::BOTTOM_4:
     case InfoBoxSettings::Geometry::TOP_4:
       return InfoBoxSettings::Geometry::RIGHT_4;
+      
+    case InfoBoxSettings::Geometry::BOTTOM_7:
+      return InfoBoxSettings::Geometry::LEFT_7;
+
+    case InfoBoxSettings::Geometry::TOP_7_BOTTOM_7:
+      return InfoBoxSettings::Geometry::LEFT_7_RIGHT_7;
+      
     }
   } else if (width == height) {
     /* square */
@@ -294,6 +331,8 @@ InfoBoxLayout::ValidateGeometry(InfoBoxSettings::Geometry geometry,
     case InfoBoxSettings::Geometry::TOP_8:
     case InfoBoxSettings::Geometry::TOP_4:
     case InfoBoxSettings::Geometry::TOP_12:
+    case InfoBoxSettings::Geometry::BOTTOM_7:
+    case InfoBoxSettings::Geometry::TOP_7_BOTTOM_7:
       break;
 
     case InfoBoxSettings::Geometry::LEFT_4_RIGHT_4:
@@ -317,6 +356,13 @@ InfoBoxLayout::ValidateGeometry(InfoBoxSettings::Geometry geometry,
 
     case InfoBoxSettings::Geometry::RIGHT_4:
       return InfoBoxSettings::Geometry::BOTTOM_4;
+
+    case InfoBoxSettings::Geometry::LEFT_7:
+      return InfoBoxSettings::Geometry::BOTTOM_7;
+
+    case InfoBoxSettings::Geometry::LEFT_7_RIGHT_7:
+      return InfoBoxSettings::Geometry::TOP_7_BOTTOM_7;
+
     }
   }
 
@@ -327,6 +373,8 @@ void
 InfoBoxLayout::CalcInfoBoxSizes(Layout &layout, PixelRect rc,
                                 InfoBoxSettings::Geometry geometry)
 {
+const UISettings &ui_settings = CommonInterface::GetUISettings();
+
   switch (geometry) {
   case InfoBoxSettings::Geometry::TOP_4_BOTTOM_4:
   case InfoBoxSettings::Geometry::BOTTOM_8:
@@ -335,34 +383,34 @@ InfoBoxLayout::CalcInfoBoxSizes(Layout &layout, PixelRect rc,
   case InfoBoxSettings::Geometry::TOP_12:
     // calculate control dimensions
     layout.control_width = 2 * (rc.right - rc.left) / layout.count;
-    layout.control_height = (rc.bottom - rc.top) / CONTROLHEIGHTRATIO;
+    layout.control_height = (ui_settings.info_boxes.size/100.0) * (rc.bottom - rc.top) / CONTROLHEIGHTRATIO;
     break;
 
   case InfoBoxSettings::Geometry::TOP_4:
   case InfoBoxSettings::Geometry::BOTTOM_4:
     // calculate control dimensions
     layout.control_width = (rc.right - rc.left) / layout.count;
-    layout.control_height = (rc.bottom - rc.top) / CONTROLHEIGHTRATIO;
+    layout.control_height = (ui_settings.info_boxes.size/100.0) * (rc.bottom - rc.top) / CONTROLHEIGHTRATIO;
     break;
 
   case InfoBoxSettings::Geometry::BOTTOM_8_VARIO:
     // calculate control dimensions
     layout.control_width = 2 * (rc.right - rc.left) / (layout.count + 2);
-    layout.control_height = (rc.bottom - rc.top) / CONTROLHEIGHTRATIO;
+    layout.control_height = (ui_settings.info_boxes.size/100.0) * (rc.bottom - rc.top) / CONTROLHEIGHTRATIO;
     break;
 
   case InfoBoxSettings::Geometry::LEFT_4_RIGHT_4:
   case InfoBoxSettings::Geometry::LEFT_8:
   case InfoBoxSettings::Geometry::RIGHT_8:
     // calculate control dimensions
-    layout.control_width = (rc.right - rc.left) / CONTROLHEIGHTRATIO * 1.3;
+    layout.control_width = (ui_settings.info_boxes.size/100.0) * (rc.right - rc.left) / CONTROLHEIGHTRATIO * 1.3;
     layout.control_height = 2 * (rc.bottom - rc.top) / layout.count;
     break;
 
   case InfoBoxSettings::Geometry::LEFT_4:
   case InfoBoxSettings::Geometry::RIGHT_4:
     // calculate control dimensions
-    layout.control_width = (rc.right - rc.left) / CONTROLHEIGHTRATIO * 1.3;
+    layout.control_width = (ui_settings.info_boxes.size/100.0) * (rc.right - rc.left) / CONTROLHEIGHTRATIO * 1.3;
     layout.control_height = (rc.bottom - rc.top) / layout.count;
     break;
 
@@ -372,19 +420,45 @@ InfoBoxLayout::CalcInfoBoxSizes(Layout &layout, PixelRect rc,
     // calculate control dimensions
     layout.control_height = (rc.bottom - rc.top) / 6;
     // preserve relative shape
-    layout.control_width = layout.control_height * 1.44;
+    layout.control_width = layout.control_height * 1.44 * (ui_settings.info_boxes.size/100.0);
     break;
 
   case InfoBoxSettings::Geometry::RIGHT_5:
     // calculate control dimensions
-    layout.control_width = (rc.right - rc.left) * 0.2;
+    layout.control_width = (rc.right - rc.left) * 0.2 * (ui_settings.info_boxes.size/100.0);
     layout.control_height = (rc.bottom - rc.top) / 5;
     break;
 
   case InfoBoxSettings::Geometry::RIGHT_24:
     layout.control_height = (rc.bottom - rc.top) / 8;
-    layout.control_width = layout.control_height * 1.44;
+    layout.control_width = layout.control_height * 1.44 * (ui_settings.info_boxes.size/100.0);
     break;
+
+  case InfoBoxSettings::Geometry::BOTTOM_7:
+    // calculate control dimensions
+    layout.control_width = (rc.right - rc.left) / layout.count;
+    layout.control_height = (ui_settings.info_boxes.size/100.0) * (rc.bottom - rc.top) / CONTROLHEIGHTRATIO;
+    break;
+
+  case InfoBoxSettings::Geometry::TOP_7_BOTTOM_7:
+    // calculate control dimensions
+    layout.control_width = 2* (rc.right - rc.left) / layout.count;
+    layout.control_height = (ui_settings.info_boxes.size/100.0) * (rc.bottom - rc.top) / CONTROLHEIGHTRATIO;
+    break;
+
+  case InfoBoxSettings::Geometry::LEFT_7_RIGHT_7:
+    // calculate control dimensions
+    layout.control_width = (ui_settings.info_boxes.size/100.0) * (rc.right - rc.left) / CONTROLHEIGHTRATIO * 1.3;
+    layout.control_height = 2 * (rc.bottom - rc.top) / layout.count;
+    break;
+
+  case InfoBoxSettings::Geometry::LEFT_7:
+    // calculate control dimensions
+    layout.control_width = (ui_settings.info_boxes.size/100.0) * (rc.right - rc.left) / CONTROLHEIGHTRATIO * 1.3;
+    layout.control_height = (rc.bottom - rc.top) / layout.count;
+    break;
+
+
   }
 }
 
@@ -404,6 +478,15 @@ InfoBoxLayout::GetBorder(InfoBoxSettings::Geometry geometry, unsigned i)
       border |= BORDERRIGHT;
     break;
 
+  case InfoBoxSettings::Geometry::TOP_7_BOTTOM_7:
+    if (i < 7)
+      border |= BORDERBOTTOM;
+    else
+      border |= BORDERTOP;
+
+    border |= BORDERRIGHT;
+    break;
+
   case InfoBoxSettings::Geometry::BOTTOM_8:
   case InfoBoxSettings::Geometry::BOTTOM_8_VARIO:
   case InfoBoxSettings::Geometry::BOTTOM_4:
@@ -412,6 +495,12 @@ InfoBoxLayout::GetBorder(InfoBoxSettings::Geometry geometry, unsigned i)
     if (i != 3 && i != 7)
       border |= BORDERRIGHT;
     break;
+
+  case InfoBoxSettings::Geometry::BOTTOM_7:
+    border |= BORDERTOP;
+    border |= BORDERRIGHT;
+    break;
+
 
   case InfoBoxSettings::Geometry::BOTTOM_12:
     border |= BORDERTOP;
@@ -445,6 +534,16 @@ InfoBoxLayout::GetBorder(InfoBoxSettings::Geometry geometry, unsigned i)
       border |= BORDERLEFT;
     break;
 
+  case InfoBoxSettings::Geometry::LEFT_7_RIGHT_7:
+    border |= BORDERBOTTOM;
+
+    if (i < 7)
+      border |= BORDERRIGHT;
+    else
+      border |= BORDERLEFT;
+    break;
+
+
   case InfoBoxSettings::Geometry::LEFT_6_RIGHT_3_VARIO:
     if ((i != 0) && (i != 6))
       border |= BORDERTOP;
@@ -461,6 +560,12 @@ InfoBoxLayout::GetBorder(InfoBoxSettings::Geometry geometry, unsigned i)
 
     border |= BORDERRIGHT;
     break;
+
+  case InfoBoxSettings::Geometry::LEFT_7:
+    border |= BORDERBOTTOM;
+    border |= BORDERRIGHT;
+    break;
+
 
   case InfoBoxSettings::Geometry::RIGHT_8:
   case InfoBoxSettings::Geometry::RIGHT_4:

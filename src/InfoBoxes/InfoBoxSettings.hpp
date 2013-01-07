@@ -104,11 +104,20 @@ struct InfoBoxSettings {
     BOTTOM_4 = 15,
     RIGHT_4 = 16,
     LEFT_4 = 17,
+    
+    /* */
+    LEFT_7 = 18,
+    BOTTOM_7 = 19,
+    LEFT_7_RIGHT_7 = 20,
+    TOP_7_BOTTOM_7 = 21,
+    
   } geometry;
 
   bool inverse, use_colors;
 
   InfoBoxBorderAppearance_t border_style;
+
+  int size; // 100 = default size.
 
   Panel panels[MAX_PANELS];
 
