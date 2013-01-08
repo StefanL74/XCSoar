@@ -111,6 +111,7 @@ enum class WindArrowStyle: uint8_t {
   ARROW_HEAD,
   FULL_ARROW,
   NO_ARROW,
+  TRANSPARENT_ARROW_HEAD,
 };
 
 struct MapSettings {

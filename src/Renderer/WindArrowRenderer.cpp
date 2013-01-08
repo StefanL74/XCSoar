@@ -54,7 +54,10 @@ WindArrowRenderer::DrawArrow(Canvas &canvas, RasterPoint pos, Angle angle,
   PolygonRotateShift(arrow, ARRAY_SIZE(arrow), pos.x, pos.y, angle);
 
   canvas.Select(look.arrow_pen);
-  canvas.Select(look.arrow_brush);
+  if (arrow_style == WindArrowStyle::TRANSPARENT_ARROW_HEAD)
+    canvas.Select(look.transparent_brush);
+  else
+    canvas.Select(look.arrow_brush);
   canvas.DrawPolygon(arrow, ARRAY_SIZE(arrow));
 
   // Draw arrow tail

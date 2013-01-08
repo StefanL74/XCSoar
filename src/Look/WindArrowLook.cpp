@@ -30,4 +30,5 @@ WindArrowLook::Initialise()
   arrow_pen.Set(Layout::Scale(1), DarkColor(COLOR_GRAY));
   tail_pen.Set(Pen::DASH, 1, COLOR_BLACK);
   arrow_brush.Set(COLOR_GRAY);
+  transparent_brush.Reset();
 }

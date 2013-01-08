@@ -125,6 +125,7 @@ static const StaticEnumChoice  wind_arrow_list[] = {
   { (unsigned)WindArrowStyle::NO_ARROW, N_("Off"), N_("No wind arrow is drawn.") },
   { (unsigned)WindArrowStyle::ARROW_HEAD, N_("Arrow head"), N_("Draws an arrow head only.") },
   { (unsigned)WindArrowStyle::FULL_ARROW, N_("Full arrow"), N_("Draws an arrow head with a dashed arrow line.") },
+  { (unsigned)WindArrowStyle::TRANSPARENT_ARROW_HEAD, N_("Transparent Arrow head"), N_("Draws a transparent arrow head only.") },
   { 0 }
 };
 

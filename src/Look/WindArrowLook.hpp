@@ -31,6 +31,7 @@ struct WindArrowLook
 {
   Pen arrow_pen, tail_pen;
   Brush arrow_brush;
+  Brush transparent_brush;
 
   void Initialise();
 };
