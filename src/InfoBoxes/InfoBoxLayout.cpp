@@ -267,8 +267,6 @@ InfoBoxLayout::ValidateGeometry(InfoBoxSettings::Geometry geometry,
     /* out of range */
     geometry = InfoBoxSettings::Geometry::TOP_4_BOTTOM_4;
 
-  return geometry;
-
   if (width > height) {
     /* landscape */
 
@@ -310,10 +308,10 @@ InfoBoxLayout::ValidateGeometry(InfoBoxSettings::Geometry geometry,
       return InfoBoxSettings::Geometry::RIGHT_4;
       
     case InfoBoxSettings::Geometry::BOTTOM_7:
-      return InfoBoxSettings::Geometry::LEFT_7;
+      return InfoBoxSettings::Geometry::BOTTOM_7;
 
     case InfoBoxSettings::Geometry::TOP_7_BOTTOM_7:
-      return InfoBoxSettings::Geometry::LEFT_7_RIGHT_7;
+      return InfoBoxSettings::Geometry::TOP_7_BOTTOM_7;
       
     }
   } else if (width == height) {
